@@ -1,13 +1,10 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
+// Railway dagi bazaga ulanish kodi
 const sequelize = new Sequelize(
-  process.env.BD_NAME || 'Backend',
-  process.env.DB_USER || 'postgres',
-  process.env.DB_PASSWORD || 'password',
+  process.env.DATABASE_URL || 'postgresql://postgres:LZhmLnBOdZCQeSgndLoGpVedSjPObEjQ@zephyr.proxy.rlwy.net:42668/railway',
   {
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
     dialect: 'postgres',
     logging: false,
   }
