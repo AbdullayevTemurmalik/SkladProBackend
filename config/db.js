@@ -7,7 +7,7 @@ const sequelize = new Sequelize(
   {
     dialect: 'postgres',
     logging: false,
-    dialectOptions: {
+    dialectOptions: process.env.RAILWAY_ENVIRONMENT ? {} : {
       ssl: {
         require: true,
         rejectUnauthorized: false
