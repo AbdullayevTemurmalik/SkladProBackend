@@ -60,6 +60,7 @@ const controller = require('../controllers/product.controller');
  *         description: Yaratildi
  */
 router.post('/', controller.create);
+router.post('/bulk-upload', controller.bulkUpload);
 
 /**
  * @swagger

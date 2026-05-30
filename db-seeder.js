@@ -105,40 +105,38 @@ async function seedDatabase() {
       ],
     };
 
-    for (let w of createdWarehouses) {
-      let productsChunk = [];
-      for (let j = 0; j < totalPerWarehouse; j++) {
-        // Kategoriya aniqlash
-        const category = categories[j % categories.length];
-        // Shu kategoriyaga mos haqiqiy nomlarni olish
-        const categoryProducts =
-          realProducts[category.name] || realProducts["Elektronika"];
-        // Random mahsulot tanlash
-        const randomProduct =
-          categoryProducts[Math.floor(Math.random() * categoryProducts.length)];
+    // Jami 50 ta tovar yaratamiz
+    const totalProducts = 50;
+    let productsChunk = [];
 
-        const imageUrl = `https://picsum.photos/seed/sklad_${w.id}_${j}/400/400`;
+    for (let j = 0; j < totalProducts; j++) {
+      const category = categories[j % categories.length];
+      const categoryProducts = realProducts[category.name] || realProducts["Elektronika"];
+      const randomProduct = categoryProducts[Math.floor(Math.random() * categoryProducts.length)];
+      const w = createdWarehouses[j % createdWarehouses.length]; // Omborlarga bo'lib tashlash
 
-        productsChunk.push({
-          name: randomProduct.name,
-          brand: randomProduct.brand,
-          sku: `${randomProduct.sku}-${w.id}-${j}`,
-          height: Math.floor(Math.random() * 100) + 10,
-          width: Math.floor(Math.random() * 100) + 10,
-          length: Math.floor(Math.random() * 100) + 10,
-          year: 2024 + Math.floor(Math.random() * 5),
-          stock: Math.floor(Math.random() * 100) + 10,
-          categoryId: category.id,
-          unitId: units[Math.floor(Math.random() * units.length)].id,
-          warehouseId: w.id,
-          image: imageUrl,
-        });
-      }
-      await Product.bulkCreate(productsChunk, { logging: false });
+      const imageUrl = `https://picsum.photos/seed/sklad_50_${j}/400/400`;
+
+      productsChunk.push({
+        name: randomProduct.name,
+        brand: randomProduct.brand,
+        sku: `${randomProduct.sku}-${w.id}-${j}`,
+        height: Math.floor(Math.random() * 100) + 10,
+        width: Math.floor(Math.random() * 100) + 10,
+        length: Math.floor(Math.random() * 100) + 10,
+        year: 2024 + Math.floor(Math.random() * 5),
+        stock: Math.floor(Math.random() * 100) + 10,
+        categoryId: category.id,
+        unitId: units[Math.floor(Math.random() * units.length)].id,
+        warehouseId: w.id,
+        image: imageUrl,
+      });
     }
 
+    await Product.bulkCreate(productsChunk, { logging: false });
+
     console.log(
-      "\nJami 360 ta mahsulot chiroyli rasmlari bilan saqlandi! UI uchun testga tayyor!",
+      "\nJami 50 ta mahsulot chiroyli rasmlari bilan saqlandi! UI uchun testga tayyor!",
     );
     process.exit(0);
   } catch (error) {

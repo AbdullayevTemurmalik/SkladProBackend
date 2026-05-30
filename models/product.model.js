@@ -14,7 +14,7 @@ const Product = sequelize.define('product', {
   categoryId: { type: DataTypes.INTEGER },
   unitId: { type: DataTypes.INTEGER },
   warehouseId: { type: DataTypes.INTEGER },
-  image: { type: DataTypes.TEXT } // Rasm URL manzili uzun bo'lishi mumkinligi uchun TEXT qildik
+  image: { type: DataTypes.TEXT }
 }, { timestamps: true });
 
 module.exports = Product;
