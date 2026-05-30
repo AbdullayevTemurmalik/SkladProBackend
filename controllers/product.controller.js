@@ -69,45 +69,78 @@ exports.bulkUpload = async (req, res) => {
     // Hamma carriage-return (\r) larni tozalab, bo'sh qatorlarni olib tashlaymiz
     const cleanedData = csvData.replace(/\r/g, '');
     const lines = cleanedData.split('\n').filter(line => line.trim() !== '');
-    if (lines.length < 2) return res.status(400).json({ error: "Faylda yetarli ma'lumot yo'q yoki noto'g'ri format" });
+    if (lines.length === 0) return res.status(400).json({ error: "Fayl bo'sh" });
 
-    const separator = lines[0].includes('\t') ? '\t' : ',';
+    let separator = ',';
+    if (lines[0].includes('\t')) separator = '\t';
+    else if (lines[0].includes(';')) separator = ';';
     const headers = lines[0].split(separator).map(h => h.trim().toLowerCase());
+    
+    // Sarlavha (Header) bor yo'qligini aniqlaymiz
+    const hasHeaders = headers.some(h => ['nomi', 'name', 'mahsulot', 'brend', 'brand', 'sku', 'kategoriya', 'qoldiq', 'yili', 'ombor', 'birlik', 'rasm'].includes(h));
 
     const categories = await Category.findAll();
     const warehouses = await Warehouse.findAll();
     const units = await Unit.findAll();
 
     const newProducts = [];
+    const startIndex = hasHeaders ? 1 : 0;
 
-    for (let i = 1; i < lines.length; i++) {
+    for (let i = startIndex; i < lines.length; i++) {
       const cols = lines[i].split(separator);
-      const rowData = {};
+      
+      let name, brand, sku, stock, year, image, catName, whName, unitName, height, width, length;
 
-      headers.forEach((h, index) => {
-        rowData[h] = cols[index]?.trim() || '';
-      });
+      if (hasHeaders) {
+        const rowData = {};
+        headers.forEach((h, index) => {
+          rowData[h] = cols[index]?.trim() || '';
+        });
 
-      const name = rowData['nomi'] || rowData['name'] || rowData['mahsulot'] || 'Nomsiz';
+        name = rowData['nomi'] || rowData['name'] || rowData['mahsulot'];
+        brand = rowData['brend'] || rowData['brand'];
+        sku = rowData['sku'] || rowData['kod'];
+        stock = rowData['qoldiq'] || rowData['stock'] || rowData['soni'];
+        year = rowData['yili'] || rowData['yil'] || rowData['year'];
+        image = rowData['rasm'] || rowData['image'] || rowData['img'] || rowData['rasmurl'];
+        catName = rowData['kategoriya'] || rowData['category'];
+        whName = rowData['ombor'] || rowData['warehouse'] || rowData['sklad'];
+        unitName = rowData['birlik'] || rowData['unit'] || rowData['ulchov'];
+        height = rowData['boyi'] || rowData['height'];
+        width = rowData['eni'] || rowData['width'];
+        length = rowData['uzunligi'] || rowData['uzunlik'] || rowData['length'];
+      } else {
+        // Agar sarlavha umuman bo'lmasa, standart index orqali o'qiymiz
+        name = cols[0];
+        brand = cols[1];
+        sku = cols[2];
+        stock = cols[3];
+        year = cols[4];
+        catName = cols[5];
+        whName = cols[6];
+        unitName = cols[7];
+        image = cols[8];
+        height = cols[9];
+        width = cols[10];
+        length = cols[11];
+      }
+
+      name = name?.toString().trim() || 'Nomsiz';
       if (!name || name === 'Nomsiz') continue;
 
-      const brand = rowData['brend'] || rowData['brand'] || 'Brendsiz';
-      const sku = rowData['sku'] || rowData['kod'] || `SKU-${Date.now()}-${i}`;
-      const stock = Number(rowData['qoldiq'] || rowData['stock'] || rowData['soni']) || 0;
-      const year = Number(rowData['yili'] || rowData['yil'] || rowData['year']) || 2024;
-      const image = rowData['rasm'] || rowData['image'] || rowData['img'] || rowData['rasmurl'] || 'https://picsum.photos/400/400';
+      brand = brand?.toString().trim() || 'Brendsiz';
+      sku = sku?.toString().trim() || `SKU-${Date.now()}-${i}`;
+      stock = Number(stock) || 0;
+      year = Number(year) || 2024;
+      image = image?.toString().trim() || 'https://picsum.photos/400/400';
+      
+      height = Number(height) || 10;
+      width = Number(width) || 10;
+      length = Number(length) || 10;
 
-      const catName = rowData['kategoriya'] || rowData['category'] || '';
-      const whName = rowData['ombor'] || rowData['warehouse'] || rowData['sklad'] || '';
-      const unitName = rowData['birlik'] || rowData['unit'] || rowData['ulchov'] || '';
-
-      const height = Number(rowData['boyi'] || rowData['height']) || 10;
-      const width = Number(rowData['eni'] || rowData['width']) || 10;
-      const length = Number(rowData['uzunligi'] || rowData['uzunlik'] || rowData['length']) || 10;
-
-      const cat = categories.find(c => c.name.toLowerCase() === catName.toLowerCase());
-      const wh = warehouses.find(w => w.name.toLowerCase() === whName.toLowerCase());
-      const un = units.find(u => u.name.toLowerCase() === unitName.toLowerCase());
+      const cat = categories.find(c => c.name.toLowerCase() === (catName?.toString().trim().toLowerCase() || ''));
+      const wh = warehouses.find(w => w.name.toLowerCase() === (whName?.toString().trim().toLowerCase() || ''));
+      const un = units.find(u => u.name.toLowerCase() === (unitName?.toString().trim().toLowerCase() || ''));
 
       newProducts.push({
         name, brand, sku, stock, year, image, height, width, length,

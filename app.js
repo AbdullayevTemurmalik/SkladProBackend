@@ -16,6 +16,8 @@ const seedRoutes = require("./routes/seed.routes");
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static('public'));
+app.use('/uploads', express.static('public/uploads'));
 
 // Swagger setup
 const swaggerOptions = {
