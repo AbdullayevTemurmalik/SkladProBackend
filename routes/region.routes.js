@@ -1,19 +1,27 @@
-const express = require('express');
-const router = express.Router();
-const controller = require('../controllers/region.controller');
+const { Router } = require("express");
+const router = Router();
+
+const {
+  createRegion,
+  getRegions,
+  getRegionById,
+  updateRegion,
+  deleteRegion,
+  searchRegion,
+} = require("../controllers/region.controller");
 
 /**
  * @swagger
  * tags:
- *   name: Regions
- *   description: Region management API
+ *   - name: Regions
+ *     description: Viloyat boshqaruvi
  */
 
 /**
  * @swagger
- * /api/regions:
+ * /regions/createRegion:
  *   post:
- *     summary: Yangi viloyat yaratish
+ *     summary: Yangi Viloyat yaratish
  *     tags: [Regions]
  *     requestBody:
  *       required: true
@@ -21,52 +29,41 @@ const controller = require('../controllers/region.controller');
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
  *             properties:
  *               name:
  *                 type: string
- *                 example: "Toshkent viloyati"
+ *                 example: Toshkent
  *     responses:
  *       201:
- *         description: Yaratildi
+ *         description: Viloyat yaratildi
+ *       400:
+ *         description: Noto'g'ri ma'lumot
+ *       500:
+ *         description: Server xatosi
  */
-router.post('/', controller.create);
+router.post("/createRegion", createRegion);
 
 /**
  * @swagger
- * /api/regions:
+ * /regions/getRegions:
  *   get:
- *     summary: Barcha viloyatlarni olish (filtrlarsiz)
+ *     summary: Barcha viloyatlarni olish
  *     tags: [Regions]
  *     responses:
  *       200:
  *         description: Viloyatlar ro'yxati
+ *       500:
+ *         description: Server xatosi
  */
-router.get('/', controller.getAll);
+router.get("/getRegions", getRegions);
 
 /**
  * @swagger
- * /api/regions/search:
+ * /regions/getRegion/{id}:
  *   get:
- *     summary: Viloyatlarni qidirish
- *     tags: [Regions]
- *     parameters:
- *       - in: query
- *         name: name
- *         schema:
- *           type: string
- *         example: "Toshkent"
- *         description: Nomi bo'yicha qidiruv
- *     responses:
- *       200:
- *         description: Qidiruv natijalari
- */
-router.get('/search', controller.search);
-
-/**
- * @swagger
- * /api/regions/{id}:
- *   get:
- *     summary: ID bo'yicha viloyatni olish
+ *     summary: ID bo'yicha viloyat olish
  *     tags: [Regions]
  *     parameters:
  *       - in: path
@@ -77,13 +74,17 @@ router.get('/search', controller.search);
  *         example: 1
  *     responses:
  *       200:
- *         description: Viloyat ma'lumotlari
+ *         description: Viloyat topildi
+ *       404:
+ *         description: Viloyat topilmadi
+ *       500:
+ *         description: Server xatosi
  */
-router.get('/:id', controller.getById);
+router.get("/getRegion/:id", getRegionById);
 
 /**
  * @swagger
- * /api/regions/{id}:
+ * /regions/updateRegion/{id}:
  *   put:
  *     summary: Viloyatni yangilash
  *     tags: [Regions]
@@ -103,16 +104,22 @@ router.get('/:id', controller.getById);
  *             properties:
  *               name:
  *                 type: string
- *                 example: "Samarqand viloyati"
+ *                 example: Samarqand
  *     responses:
  *       200:
- *         description: Yangilandi
+ *         description: Viloyat yangilandi
+ *       400:
+ *         description: Noto'g'ri ma'lumot
+ *       404:
+ *         description: Viloyat topilmadi
+ *       500:
+ *         description: Server xatosi
  */
-router.put('/:id', controller.update);
+router.put("/updateRegion/:id", updateRegion);
 
 /**
  * @swagger
- * /api/regions/{id}:
+ * /regions/deleteRegion/{id}:
  *   delete:
  *     summary: Viloyatni o'chirish
  *     tags: [Regions]
@@ -125,8 +132,35 @@ router.put('/:id', controller.update);
  *         example: 1
  *     responses:
  *       204:
- *         description: O'chirildi
+ *         description: Viloyat o'chirildi
+ *       404:
+ *         description: Viloyat topilmadi
+ *       500:
+ *         description: Server xatosi
  */
-router.delete('/:id', controller.remove);
+router.delete("/deleteRegion/:id", deleteRegion);
+
+/**
+ * @swagger
+ * /regions/searchRegion:
+ *   get:
+ *     summary: Viloyat nom bo'yicha qidirish
+ *     tags: [Regions]
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *         example: Toshkent
+ *     responses:
+ *       200:
+ *         description: Qidirilgan viloyatlar
+ *       400:
+ *         description: Query talab qilinadi
+ *       500:
+ *         description: Server xatosi
+ */
+router.get("/searchRegion", searchRegion);
 
 module.exports = router;

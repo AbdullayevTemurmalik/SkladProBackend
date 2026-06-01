@@ -12,6 +12,7 @@ const unitRoutes = require("./routes/unit.routes");
 const warehouseRoutes = require("./routes/warehouse.routes");
 const productRoutes = require("./routes/product.routes");
 const seedRoutes = require("./routes/seed.routes");
+const userRoutes = require("./routes/user.routes");
 
 const app = express();
 app.use(cors());
@@ -29,6 +30,18 @@ const swaggerOptions = {
       description: "API for Warehouses and Products",
     },
     servers: [{ url: `http://localhost:${process.env.PORT || 3000}` }],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        }
+      }
+    },
+    security: [{
+      bearerAuth: []
+    }]
   },
   apis: ["./routes/*.js"],
 };
@@ -36,12 +49,13 @@ const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Mount Routes
-app.use("/api/regions", regionRoutes);
-app.use("/api/categories", categoryRoutes);
-app.use("/api/units", unitRoutes);
-app.use("/api/warehouses", warehouseRoutes);
-app.use("/api/products", productRoutes);
-app.use("/api/seed", seedRoutes);
+app.use("/users", userRoutes);
+app.use("/regions", regionRoutes);
+app.use("/categories", categoryRoutes);
+app.use("/units", unitRoutes);
+app.use("/warehouses", warehouseRoutes);
+app.use("/products", productRoutes);
+app.use("/seed", seedRoutes);
 
 const PORT = process.env.PORT || 3000;
 

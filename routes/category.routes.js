@@ -1,19 +1,27 @@
-const express = require('express');
-const router = express.Router();
-const controller = require('../controllers/category.controller');
+const { Router } = require("express");
+const router = Router();
+
+const {
+  createCategory,
+  getCategories,
+  getCategoryById,
+  updateCategory,
+  deleteCategory,
+  searchCategory,
+} = require("../controllers/category.controller");
 
 /**
  * @swagger
  * tags:
- *   name: Categories
- *   description: Category management API
+ *   - name: Categories
+ *     description: Kategoriya boshqaruvi
  */
 
 /**
  * @swagger
- * /api/categories:
+ * /categories/createCategory:
  *   post:
- *     summary: Yangi kategoriya yaratish
+ *     summary: Yangi Category yaratish
  *     tags: [Categories]
  *     requestBody:
  *       required: true
@@ -21,52 +29,41 @@ const controller = require('../controllers/category.controller');
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
  *             properties:
  *               name:
  *                 type: string
- *                 example: "Elektronika"
+ *                 example: Telefonlar
  *     responses:
  *       201:
- *         description: Yaratildi
+ *         description: Category yaratildi
+ *       400:
+ *         description: Noto'g'ri ma'lumot
+ *       500:
+ *         description: Server xatosi
  */
-router.post('/', controller.create);
+router.post("/createCategory", createCategory);
 
 /**
  * @swagger
- * /api/categories:
+ * /categories/getCategories:
  *   get:
- *     summary: Barcha kategoriyalarni olish (filtrlarsiz)
+ *     summary: Barcha kategoriyalarni olish
  *     tags: [Categories]
  *     responses:
  *       200:
  *         description: Kategoriyalar ro'yxati
+ *       500:
+ *         description: Server xatosi
  */
-router.get('/', controller.getAll);
+router.get("/getCategories", getCategories);
 
 /**
  * @swagger
- * /api/categories/search:
+ * /categories/getCategory/{id}:
  *   get:
- *     summary: Kategoriyalarni qidirish
- *     tags: [Categories]
- *     parameters:
- *       - in: query
- *         name: name
- *         schema:
- *           type: string
- *         example: "Elektronika"
- *         description: Nomi bo'yicha qidiruv
- *     responses:
- *       200:
- *         description: Qidiruv natijalari
- */
-router.get('/search', controller.search);
-
-/**
- * @swagger
- * /api/categories/{id}:
- *   get:
- *     summary: ID bo'yicha kategoriyani olish
+ *     summary: ID bo'yicha kategoriya olish
  *     tags: [Categories]
  *     parameters:
  *       - in: path
@@ -77,13 +74,17 @@ router.get('/search', controller.search);
  *         example: 1
  *     responses:
  *       200:
- *         description: Kategoriya ma'lumotlari
+ *         description: Kategoriya topildi
+ *       404:
+ *         description: Kategoriya topilmadi
+ *       500:
+ *         description: Server xatosi
  */
-router.get('/:id', controller.getById);
+router.get("/getCategory/:id", getCategoryById);
 
 /**
  * @swagger
- * /api/categories/{id}:
+ * /categories/updateCategory/{id}:
  *   put:
  *     summary: Kategoriyani yangilash
  *     tags: [Categories]
@@ -103,16 +104,22 @@ router.get('/:id', controller.getById);
  *             properties:
  *               name:
  *                 type: string
- *                 example: "Kiyim-kechak"
+ *                 example: Noutbuklar
  *     responses:
  *       200:
- *         description: Yangilandi
+ *         description: Kategoriya yangilandi
+ *       400:
+ *         description: Noto'g'ri ma'lumot
+ *       404:
+ *         description: Kategoriya topilmadi
+ *       500:
+ *         description: Server xatosi
  */
-router.put('/:id', controller.update);
+router.put("/updateCategory/:id", updateCategory);
 
 /**
  * @swagger
- * /api/categories/{id}:
+ * /categories/deleteCategory/{id}:
  *   delete:
  *     summary: Kategoriyani o'chirish
  *     tags: [Categories]
@@ -125,8 +132,35 @@ router.put('/:id', controller.update);
  *         example: 1
  *     responses:
  *       204:
- *         description: O'chirildi
+ *         description: Kategoriya o'chirildi
+ *       404:
+ *         description: Kategoriya topilmadi
+ *       500:
+ *         description: Server xatosi
  */
-router.delete('/:id', controller.remove);
+router.delete("/deleteCategory/:id", deleteCategory);
+
+/**
+ * @swagger
+ * /categories/searchCategory:
+ *   get:
+ *     summary: Kategoriya nom bo'yicha qidirish
+ *     tags: [Categories]
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *         example: Telefonlar
+ *     responses:
+ *       200:
+ *         description: Qidirilgan kategoriyalar
+ *       400:
+ *         description: Query talab qilinadi
+ *       500:
+ *         description: Server xatosi
+ */
+router.get("/searchCategory", searchCategory);
 
 module.exports = router;

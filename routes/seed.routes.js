@@ -10,6 +10,12 @@ const seedController = require('../controllers/seed.controller');
  *     responses:
  *       200:
  *         description: Success
+ *       400:
+ *         description: Noto'g'ri so'rov
+ *       404:
+ *         description: Topilmadi
+ *       500:
+ *         description: Server xatosi
  */
 router.post('/', seedController.seedData);
 

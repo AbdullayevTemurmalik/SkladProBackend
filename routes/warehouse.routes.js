@@ -1,19 +1,27 @@
-const express = require('express');
-const router = express.Router();
-const controller = require('../controllers/warehouse.controller');
+const { Router } = require("express");
+const router = Router();
+
+const {
+  createWarehouse,
+  getWarehouses,
+  getWarehouseById,
+  updateWarehouse,
+  deleteWarehouse,
+  searchWarehouse,
+} = require("../controllers/warehouse.controller");
 
 /**
  * @swagger
  * tags:
- *   name: Warehouses
- *   description: Warehouse management API
+ *   - name: Warehouses
+ *     description: Ombor boshqaruvi
  */
 
 /**
  * @swagger
- * /api/warehouses:
+ * /warehouses/createWarehouse:
  *   post:
- *     summary: Yangi sklad yaratish
+ *     summary: Yangi Ombor yaratish
  *     tags: [Warehouses]
  *     requestBody:
  *       required: true
@@ -21,61 +29,48 @@ const controller = require('../controllers/warehouse.controller');
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
+ *               - regionId
  *             properties:
  *               name:
  *                 type: string
- *                 example: "Markaziy Sklad"
+ *                 example: Asosiy Ombor
  *               regionId:
+ *                 type: integer
+ *                 example: 1
+ *               userId:
  *                 type: integer
  *                 example: 1
  *     responses:
  *       201:
- *         description: Yaratildi
+ *         description: Ombor yaratildi
+ *       400:
+ *         description: Noto'g'ri ma'lumot
+ *       500:
+ *         description: Server xatosi
  */
-router.post('/', controller.create);
+router.post("/createWarehouse", createWarehouse);
 
 /**
  * @swagger
- * /api/warehouses:
+ * /warehouses/getWarehouses:
  *   get:
- *     summary: Barcha skladlarni olish (filtrlarsiz)
+ *     summary: Barcha omborlarni olish
  *     tags: [Warehouses]
  *     responses:
  *       200:
- *         description: Skladlar ro'yxati
+ *         description: Omborlar ro'yxati
+ *       500:
+ *         description: Server xatosi
  */
-router.get('/', controller.getAll);
+router.get("/getWarehouses", getWarehouses);
 
 /**
  * @swagger
- * /api/warehouses/search:
+ * /warehouses/getWarehouse/{id}:
  *   get:
- *     summary: Skladlarni qidirish
- *     tags: [Warehouses]
- *     parameters:
- *       - in: query
- *         name: name
- *         schema:
- *           type: string
- *         example: "Markaziy"
- *         description: Nomi bo'yicha qidiruv
- *       - in: query
- *         name: regionId
- *         schema:
- *           type: integer
- *         example: 1
- *         description: Viloyat bo'yicha qidiruv
- *     responses:
- *       200:
- *         description: Qidiruv natijalari
- */
-router.get('/search', controller.search);
-
-/**
- * @swagger
- * /api/warehouses/{id}:
- *   get:
- *     summary: ID bo'yicha skladni olish
+ *     summary: ID bo'yicha ombor olish
  *     tags: [Warehouses]
  *     parameters:
  *       - in: path
@@ -86,15 +81,19 @@ router.get('/search', controller.search);
  *         example: 1
  *     responses:
  *       200:
- *         description: Sklad ma'lumotlari
+ *         description: Ombor topildi
+ *       404:
+ *         description: Ombor topilmadi
+ *       500:
+ *         description: Server xatosi
  */
-router.get('/:id', controller.getById);
+router.get("/getWarehouse/:id", getWarehouseById);
 
 /**
  * @swagger
- * /api/warehouses/{id}:
+ * /warehouses/updateWarehouse/{id}:
  *   put:
- *     summary: Skladni yangilash
+ *     summary: Omborni yangilash
  *     tags: [Warehouses]
  *     parameters:
  *       - in: path
@@ -112,21 +111,28 @@ router.get('/:id', controller.getById);
  *             properties:
  *               name:
  *                 type: string
- *                 example: "Yangi Sklad"
+ *                 example: Filial Ombor
  *               regionId:
  *                 type: integer
- *                 example: 2
+ *               userId:
+ *                 type: integer
  *     responses:
  *       200:
- *         description: Yangilandi
+ *         description: Ombor yangilandi
+ *       400:
+ *         description: Noto'g'ri ma'lumot
+ *       404:
+ *         description: Ombor topilmadi
+ *       500:
+ *         description: Server xatosi
  */
-router.put('/:id', controller.update);
+router.put("/updateWarehouse/:id", updateWarehouse);
 
 /**
  * @swagger
- * /api/warehouses/{id}:
+ * /warehouses/deleteWarehouse/{id}:
  *   delete:
- *     summary: Skladni o'chirish
+ *     summary: Omborni o'chirish
  *     tags: [Warehouses]
  *     parameters:
  *       - in: path
@@ -137,8 +143,35 @@ router.put('/:id', controller.update);
  *         example: 1
  *     responses:
  *       204:
- *         description: O'chirildi
+ *         description: Ombor o'chirildi
+ *       404:
+ *         description: Ombor topilmadi
+ *       500:
+ *         description: Server xatosi
  */
-router.delete('/:id', controller.remove);
+router.delete("/deleteWarehouse/:id", deleteWarehouse);
+
+/**
+ * @swagger
+ * /warehouses/searchWarehouse:
+ *   get:
+ *     summary: Ombor nom bo'yicha qidirish
+ *     tags: [Warehouses]
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *         example: Asosiy Ombor
+ *     responses:
+ *       200:
+ *         description: Qidirilgan omborlar
+ *       400:
+ *         description: Query talab qilinadi
+ *       500:
+ *         description: Server xatosi
+ */
+router.get("/searchWarehouse", searchWarehouse);
 
 module.exports = router;

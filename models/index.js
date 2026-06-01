@@ -1,21 +1,25 @@
-const sequelize = require('../config/db');
-const Region = require('./region.model');
-const Warehouse = require('./warehouse.model');
-const Category = require('./category.model');
-const Unit = require('./unit.model');
-const Product = require('./product.model');
+const sequelize = require("../config/db");
+const Region = require("./region.model");
+const Warehouse = require("./warehouse.model");
+const Category = require("./category.model");
+const Unit = require("./unit.model");
+const Product = require("./product.model");
+const User = require("./user.model");
 
-Region.hasMany(Warehouse, { foreignKey: 'regionId', constraints: false });
-Warehouse.belongsTo(Region, { foreignKey: 'regionId', constraints: false });
+User.hasMany(Warehouse, { foreignKey: "userId", constraints: false });
+Warehouse.belongsTo(User, { foreignKey: "userId", constraints: false });
 
-Warehouse.hasMany(Product, { foreignKey: 'warehouseId', constraints: false });
-Product.belongsTo(Warehouse, { foreignKey: 'warehouseId', constraints: false });
+Region.hasMany(Warehouse, { foreignKey: "regionId", constraints: false });
+Warehouse.belongsTo(Region, { foreignKey: "regionId", constraints: false });
 
-Category.hasMany(Product, { foreignKey: 'categoryId', constraints: false });
-Product.belongsTo(Category, { foreignKey: 'categoryId', constraints: false });
+Warehouse.hasMany(Product, { foreignKey: "warehouseId", constraints: false });
+Product.belongsTo(Warehouse, { foreignKey: "warehouseId", constraints: false });
 
-Unit.hasMany(Product, { foreignKey: 'unitId', constraints: false });
-Product.belongsTo(Unit, { foreignKey: 'unitId', constraints: false });
+Category.hasMany(Product, { foreignKey: "categoryId", constraints: false });
+Product.belongsTo(Category, { foreignKey: "categoryId", constraints: false });
+
+Unit.hasMany(Product, { foreignKey: "unitId", constraints: false });
+Product.belongsTo(Unit, { foreignKey: "unitId", constraints: false });
 
 module.exports = {
   sequelize,
@@ -23,5 +27,6 @@ module.exports = {
   Warehouse,
   Category,
   Unit,
-  Product
+  Product,
+  User,
 };

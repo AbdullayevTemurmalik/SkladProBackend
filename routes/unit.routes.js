@@ -1,19 +1,27 @@
-const express = require('express');
-const router = express.Router();
-const controller = require('../controllers/unit.controller');
+const { Router } = require("express");
+const router = Router();
+
+const {
+  createUnit,
+  getUnits,
+  getUnitById,
+  updateUnit,
+  deleteUnit,
+  searchUnit,
+} = require("../controllers/unit.controller");
 
 /**
  * @swagger
  * tags:
- *   name: Units
- *   description: Unit management API
+ *   - name: Units
+ *     description: O'lchov birligi boshqaruvi
  */
 
 /**
  * @swagger
- * /api/units:
+ * /units/createUnit:
  *   post:
- *     summary: Yangi o'lchov birligi yaratish
+ *     summary: Yangi O'lchov birligi yaratish
  *     tags: [Units]
  *     requestBody:
  *       required: true
@@ -21,52 +29,41 @@ const controller = require('../controllers/unit.controller');
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
  *             properties:
  *               name:
  *                 type: string
- *                 example: "dona"
+ *                 example: kg
  *     responses:
  *       201:
- *         description: Yaratildi
+ *         description: O'lchov birligi yaratildi
+ *       400:
+ *         description: Noto'g'ri ma'lumot
+ *       500:
+ *         description: Server xatosi
  */
-router.post('/', controller.create);
+router.post("/createUnit", createUnit);
 
 /**
  * @swagger
- * /api/units:
+ * /units/getUnits:
  *   get:
- *     summary: Barcha o'lchov birliklarini olish (filtrlarsiz)
+ *     summary: Barcha o'lchov birliklarini olish
  *     tags: [Units]
  *     responses:
  *       200:
  *         description: O'lchov birliklari ro'yxati
+ *       500:
+ *         description: Server xatosi
  */
-router.get('/', controller.getAll);
+router.get("/getUnits", getUnits);
 
 /**
  * @swagger
- * /api/units/search:
+ * /units/getUnit/{id}:
  *   get:
- *     summary: O'lchov birliklarini qidirish
- *     tags: [Units]
- *     parameters:
- *       - in: query
- *         name: name
- *         schema:
- *           type: string
- *         example: "dona"
- *         description: Nomi bo'yicha qidiruv
- *     responses:
- *       200:
- *         description: Qidiruv natijalari
- */
-router.get('/search', controller.search);
-
-/**
- * @swagger
- * /api/units/{id}:
- *   get:
- *     summary: ID bo'yicha o'lchov birligini olish
+ *     summary: ID bo'yicha o'lchov birligi olish
  *     tags: [Units]
  *     parameters:
  *       - in: path
@@ -77,13 +74,17 @@ router.get('/search', controller.search);
  *         example: 1
  *     responses:
  *       200:
- *         description: O'lchov birligi ma'lumotlari
+ *         description: O'lchov birligi topildi
+ *       404:
+ *         description: O'lchov birligi topilmadi
+ *       500:
+ *         description: Server xatosi
  */
-router.get('/:id', controller.getById);
+router.get("/getUnit/:id", getUnitById);
 
 /**
  * @swagger
- * /api/units/{id}:
+ * /units/updateUnit/{id}:
  *   put:
  *     summary: O'lchov birligini yangilash
  *     tags: [Units]
@@ -103,16 +104,22 @@ router.get('/:id', controller.getById);
  *             properties:
  *               name:
  *                 type: string
- *                 example: "kg"
+ *                 example: dona
  *     responses:
  *       200:
- *         description: Yangilandi
+ *         description: O'lchov birligi yangilandi
+ *       400:
+ *         description: Noto'g'ri ma'lumot
+ *       404:
+ *         description: O'lchov birligi topilmadi
+ *       500:
+ *         description: Server xatosi
  */
-router.put('/:id', controller.update);
+router.put("/updateUnit/:id", updateUnit);
 
 /**
  * @swagger
- * /api/units/{id}:
+ * /units/deleteUnit/{id}:
  *   delete:
  *     summary: O'lchov birligini o'chirish
  *     tags: [Units]
@@ -125,8 +132,35 @@ router.put('/:id', controller.update);
  *         example: 1
  *     responses:
  *       204:
- *         description: O'chirildi
+ *         description: O'lchov birligi o'chirildi
+ *       404:
+ *         description: O'lchov birligi topilmadi
+ *       500:
+ *         description: Server xatosi
  */
-router.delete('/:id', controller.remove);
+router.delete("/deleteUnit/:id", deleteUnit);
+
+/**
+ * @swagger
+ * /units/searchUnit:
+ *   get:
+ *     summary: O'lchov birligi nom bo'yicha qidirish
+ *     tags: [Units]
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *         example: kg
+ *     responses:
+ *       200:
+ *         description: Qidirilgan o'lchov birliklari
+ *       400:
+ *         description: Query talab qilinadi
+ *       500:
+ *         description: Server xatosi
+ */
+router.get("/searchUnit", searchUnit);
 
 module.exports = router;
