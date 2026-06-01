@@ -19,7 +19,7 @@ const {
 
 /**
  * @swagger
- * /warehouses/createWarehouse:
+ * /api/warehouses:
  *   post:
  *     summary: Yangi Ombor yaratish
  *     tags: [Warehouses]
@@ -50,11 +50,11 @@ const {
  *       500:
  *         description: Server xatosi
  */
-router.post("/createWarehouse", createWarehouse);
+router.post("/", createWarehouse);
 
 /**
  * @swagger
- * /warehouses/getWarehouses:
+ * /api/warehouses:
  *   get:
  *     summary: Barcha omborlarni olish
  *     tags: [Warehouses]
@@ -64,11 +64,11 @@ router.post("/createWarehouse", createWarehouse);
  *       500:
  *         description: Server xatosi
  */
-router.get("/getWarehouses", getWarehouses);
+router.get("/", getWarehouses);
 
 /**
  * @swagger
- * /warehouses/getWarehouse/{id}:
+ * /api/warehouses/{id}:
  *   get:
  *     summary: ID bo'yicha ombor olish
  *     tags: [Warehouses]
@@ -87,11 +87,11 @@ router.get("/getWarehouses", getWarehouses);
  *       500:
  *         description: Server xatosi
  */
-router.get("/getWarehouse/:id", getWarehouseById);
+router.get("/:id", getWarehouseById);
 
 /**
  * @swagger
- * /warehouses/updateWarehouse/{id}:
+ * /api/warehouses/{id}:
  *   put:
  *     summary: Omborni yangilash
  *     tags: [Warehouses]
@@ -126,11 +126,11 @@ router.get("/getWarehouse/:id", getWarehouseById);
  *       500:
  *         description: Server xatosi
  */
-router.put("/updateWarehouse/:id", updateWarehouse);
+router.put("/:id", updateWarehouse);
 
 /**
  * @swagger
- * /warehouses/deleteWarehouse/{id}:
+ * /api/warehouses/{id}:
  *   delete:
  *     summary: Omborni o'chirish
  *     tags: [Warehouses]
@@ -149,11 +149,11 @@ router.put("/updateWarehouse/:id", updateWarehouse);
  *       500:
  *         description: Server xatosi
  */
-router.delete("/deleteWarehouse/:id", deleteWarehouse);
+router.delete("/:id", deleteWarehouse);
 
 /**
  * @swagger
- * /warehouses/searchWarehouse:
+ * /api/warehouses/search:
  *   get:
  *     summary: Ombor nom bo'yicha qidirish
  *     tags: [Warehouses]
@@ -172,6 +172,6 @@ router.delete("/deleteWarehouse/:id", deleteWarehouse);
  *       500:
  *         description: Server xatosi
  */
-router.get("/searchWarehouse", searchWarehouse);
+router.get("/search", searchWarehouse);
 
 module.exports = router;

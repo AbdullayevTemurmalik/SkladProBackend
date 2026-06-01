@@ -20,7 +20,7 @@ const {
 
 /**
  * @swagger
- * /users/createUser:
+ * /api/users:
  *   post:
  *     summary: Yangi Foydalanuvchi yaratish
  *     tags: [Users]
@@ -56,11 +56,11 @@ const {
  *       500:
  *         description: Server xatosi
  */
-router.post("/createUser", createUser);
+router.post("/", createUser);
 
 /**
  * @swagger
- * /users/login:
+ * /api/users/login:
  *   post:
  *     summary: Tizimga kirish
  *     tags: [Users]
@@ -94,7 +94,7 @@ router.post("/login", loginUser);
 
 /**
  * @swagger
- * /users/getUsers:
+ * /api/users:
  *   get:
  *     summary: Barcha foydalanuvchilarni olish
  *     tags: [Users]
@@ -104,11 +104,11 @@ router.post("/login", loginUser);
  *       500:
  *         description: Server xatosi
  */
-router.get("/getUsers", getUsers);
+router.get("/", getUsers);
 
 /**
  * @swagger
- * /users/getUser/{id}:
+ * /api/users/{id}:
  *   get:
  *     summary: ID bo'yicha foydalanuvchini olish
  *     tags: [Users]
@@ -127,11 +127,11 @@ router.get("/getUsers", getUsers);
  *       500:
  *         description: Server xatosi
  */
-router.get("/getUser/:id", getUserById);
+router.get("/:id", getUserById);
 
 /**
  * @swagger
- * /users/updateUser/{id}:
+ * /api/users/{id}:
  *   put:
  *     summary: Foydalanuvchini yangilash
  *     tags: [Users]
@@ -163,11 +163,11 @@ router.get("/getUser/:id", getUserById);
  *       500:
  *         description: Server xatosi
  */
-router.put("/updateUser/:id", updateUser);
+router.put("/:id", updateUser);
 
 /**
  * @swagger
- * /users/deleteUser/{id}:
+ * /api/users/{id}:
  *   delete:
  *     summary: Foydalanuvchini o'chirish
  *     tags: [Users]
@@ -186,11 +186,11 @@ router.put("/updateUser/:id", updateUser);
  *       500:
  *         description: Server xatosi
  */
-router.delete("/deleteUser/:id", deleteUser);
+router.delete("/:id", deleteUser);
 
 /**
  * @swagger
- * /users/searchUser:
+ * /api/users/search:
  *   get:
  *     summary: Foydalanuvchini username bo'yicha qidirish
  *     tags: [Users]
@@ -209,6 +209,6 @@ router.delete("/deleteUser/:id", deleteUser);
  *       500:
  *         description: Server xatosi
  */
-router.get("/searchUser", searchUser);
+router.get("/search", searchUser);
 
 module.exports = router;

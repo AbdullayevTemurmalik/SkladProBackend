@@ -19,7 +19,7 @@ const {
 
 /**
  * @swagger
- * /categories/createCategory:
+ * /api/categories:
  *   post:
  *     summary: Yangi Category yaratish
  *     tags: [Categories]
@@ -43,11 +43,11 @@ const {
  *       500:
  *         description: Server xatosi
  */
-router.post("/createCategory", createCategory);
+router.post("/", createCategory);
 
 /**
  * @swagger
- * /categories/getCategories:
+ * /api/categories:
  *   get:
  *     summary: Barcha kategoriyalarni olish
  *     tags: [Categories]
@@ -57,11 +57,11 @@ router.post("/createCategory", createCategory);
  *       500:
  *         description: Server xatosi
  */
-router.get("/getCategories", getCategories);
+router.get("/", getCategories);
 
 /**
  * @swagger
- * /categories/getCategory/{id}:
+ * /api/categories/{id}:
  *   get:
  *     summary: ID bo'yicha kategoriya olish
  *     tags: [Categories]
@@ -80,11 +80,11 @@ router.get("/getCategories", getCategories);
  *       500:
  *         description: Server xatosi
  */
-router.get("/getCategory/:id", getCategoryById);
+router.get("/:id", getCategoryById);
 
 /**
  * @swagger
- * /categories/updateCategory/{id}:
+ * /api/categories/{id}:
  *   put:
  *     summary: Kategoriyani yangilash
  *     tags: [Categories]
@@ -115,11 +115,11 @@ router.get("/getCategory/:id", getCategoryById);
  *       500:
  *         description: Server xatosi
  */
-router.put("/updateCategory/:id", updateCategory);
+router.put("/:id", updateCategory);
 
 /**
  * @swagger
- * /categories/deleteCategory/{id}:
+ * /api/categories/{id}:
  *   delete:
  *     summary: Kategoriyani o'chirish
  *     tags: [Categories]
@@ -138,11 +138,11 @@ router.put("/updateCategory/:id", updateCategory);
  *       500:
  *         description: Server xatosi
  */
-router.delete("/deleteCategory/:id", deleteCategory);
+router.delete("/:id", deleteCategory);
 
 /**
  * @swagger
- * /categories/searchCategory:
+ * /api/categories/search:
  *   get:
  *     summary: Kategoriya nom bo'yicha qidirish
  *     tags: [Categories]
@@ -161,6 +161,6 @@ router.delete("/deleteCategory/:id", deleteCategory);
  *       500:
  *         description: Server xatosi
  */
-router.get("/searchCategory", searchCategory);
+router.get("/search", searchCategory);
 
 module.exports = router;

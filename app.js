@@ -13,6 +13,7 @@ const warehouseRoutes = require("./routes/warehouse.routes");
 const productRoutes = require("./routes/product.routes");
 const seedRoutes = require("./routes/seed.routes");
 const userRoutes = require("./routes/user.routes");
+const authMiddleware = require("./middleware/auth.middleware");
 
 const app = express();
 app.use(cors());
@@ -49,13 +50,13 @@ const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Mount Routes
-app.use("/users", userRoutes);
-app.use("/regions", regionRoutes);
-app.use("/categories", categoryRoutes);
-app.use("/units", unitRoutes);
-app.use("/warehouses", warehouseRoutes);
-app.use("/products", productRoutes);
-app.use("/seed", seedRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/regions", authMiddleware, regionRoutes);
+app.use("/api/categories", authMiddleware, categoryRoutes);
+app.use("/api/units", authMiddleware, unitRoutes);
+app.use("/api/warehouses", authMiddleware, warehouseRoutes);
+app.use("/api/products", authMiddleware, productRoutes);
+app.use("/api/seed", seedRoutes);
 
 const PORT = process.env.PORT || 3000;
 

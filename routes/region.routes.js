@@ -19,7 +19,7 @@ const {
 
 /**
  * @swagger
- * /regions/createRegion:
+ * /api/regions:
  *   post:
  *     summary: Yangi Viloyat yaratish
  *     tags: [Regions]
@@ -43,11 +43,11 @@ const {
  *       500:
  *         description: Server xatosi
  */
-router.post("/createRegion", createRegion);
+router.post("/", createRegion);
 
 /**
  * @swagger
- * /regions/getRegions:
+ * /api/regions:
  *   get:
  *     summary: Barcha viloyatlarni olish
  *     tags: [Regions]
@@ -57,11 +57,11 @@ router.post("/createRegion", createRegion);
  *       500:
  *         description: Server xatosi
  */
-router.get("/getRegions", getRegions);
+router.get("/", getRegions);
 
 /**
  * @swagger
- * /regions/getRegion/{id}:
+ * /api/regions/{id}:
  *   get:
  *     summary: ID bo'yicha viloyat olish
  *     tags: [Regions]
@@ -80,11 +80,11 @@ router.get("/getRegions", getRegions);
  *       500:
  *         description: Server xatosi
  */
-router.get("/getRegion/:id", getRegionById);
+router.get("/:id", getRegionById);
 
 /**
  * @swagger
- * /regions/updateRegion/{id}:
+ * /api/regions/{id}:
  *   put:
  *     summary: Viloyatni yangilash
  *     tags: [Regions]
@@ -115,11 +115,11 @@ router.get("/getRegion/:id", getRegionById);
  *       500:
  *         description: Server xatosi
  */
-router.put("/updateRegion/:id", updateRegion);
+router.put("/:id", updateRegion);
 
 /**
  * @swagger
- * /regions/deleteRegion/{id}:
+ * /api/regions/{id}:
  *   delete:
  *     summary: Viloyatni o'chirish
  *     tags: [Regions]
@@ -138,11 +138,11 @@ router.put("/updateRegion/:id", updateRegion);
  *       500:
  *         description: Server xatosi
  */
-router.delete("/deleteRegion/:id", deleteRegion);
+router.delete("/:id", deleteRegion);
 
 /**
  * @swagger
- * /regions/searchRegion:
+ * /api/regions/search:
  *   get:
  *     summary: Viloyat nom bo'yicha qidirish
  *     tags: [Regions]
@@ -161,6 +161,6 @@ router.delete("/deleteRegion/:id", deleteRegion);
  *       500:
  *         description: Server xatosi
  */
-router.get("/searchRegion", searchRegion);
+router.get("/search", searchRegion);
 
 module.exports = router;

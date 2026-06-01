@@ -19,7 +19,7 @@ const {
 
 /**
  * @swagger
- * /products/createProduct:
+ * /api/products:
  *   post:
  *     summary: Yangi Mahsulot yaratish
  *     tags: [Products]
@@ -63,11 +63,11 @@ const {
  *       500:
  *         description: Server xatosi
  */
-router.post("/createProduct", createProduct);
+router.post("/", createProduct);
 
 /**
  * @swagger
- * /products/getProducts:
+ * /api/products:
  *   get:
  *     summary: Barcha mahsulotlarni olish
  *     tags: [Products]
@@ -77,11 +77,11 @@ router.post("/createProduct", createProduct);
  *       500:
  *         description: Server xatosi
  */
-router.get("/getProducts", getProducts);
+router.get("/", getProducts);
 
 /**
  * @swagger
- * /products/getProduct/{id}:
+ * /api/products/{id}:
  *   get:
  *     summary: ID bo'yicha mahsulot olish
  *     tags: [Products]
@@ -100,11 +100,11 @@ router.get("/getProducts", getProducts);
  *       500:
  *         description: Server xatosi
  */
-router.get("/getProduct/:id", getProductById);
+router.get("/:id", getProductById);
 
 /**
  * @swagger
- * /products/updateProduct/{id}:
+ * /api/products/{id}:
  *   put:
  *     summary: Mahsulotni yangilash
  *     tags: [Products]
@@ -138,11 +138,11 @@ router.get("/getProduct/:id", getProductById);
  *       500:
  *         description: Server xatosi
  */
-router.put("/updateProduct/:id", updateProduct);
+router.put("/:id", updateProduct);
 
 /**
  * @swagger
- * /products/deleteProduct/{id}:
+ * /api/products/{id}:
  *   delete:
  *     summary: Mahsulotni o'chirish
  *     tags: [Products]
@@ -161,11 +161,11 @@ router.put("/updateProduct/:id", updateProduct);
  *       500:
  *         description: Server xatosi
  */
-router.delete("/deleteProduct/:id", deleteProduct);
+router.delete("/:id", deleteProduct);
 
 /**
  * @swagger
- * /products/searchProduct:
+ * /api/products/search:
  *   get:
  *     summary: Mahsulot nom bo'yicha qidirish
  *     tags: [Products]
@@ -184,6 +184,6 @@ router.delete("/deleteProduct/:id", deleteProduct);
  *       500:
  *         description: Server xatosi
  */
-router.get("/searchProduct", searchProduct);
+router.get("/search", searchProduct);
 
 module.exports = router;

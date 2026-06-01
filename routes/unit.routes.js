@@ -19,7 +19,7 @@ const {
 
 /**
  * @swagger
- * /units/createUnit:
+ * /api/units:
  *   post:
  *     summary: Yangi O'lchov birligi yaratish
  *     tags: [Units]
@@ -43,11 +43,11 @@ const {
  *       500:
  *         description: Server xatosi
  */
-router.post("/createUnit", createUnit);
+router.post("/", createUnit);
 
 /**
  * @swagger
- * /units/getUnits:
+ * /api/units:
  *   get:
  *     summary: Barcha o'lchov birliklarini olish
  *     tags: [Units]
@@ -57,11 +57,11 @@ router.post("/createUnit", createUnit);
  *       500:
  *         description: Server xatosi
  */
-router.get("/getUnits", getUnits);
+router.get("/", getUnits);
 
 /**
  * @swagger
- * /units/getUnit/{id}:
+ * /api/units/{id}:
  *   get:
  *     summary: ID bo'yicha o'lchov birligi olish
  *     tags: [Units]
@@ -80,11 +80,11 @@ router.get("/getUnits", getUnits);
  *       500:
  *         description: Server xatosi
  */
-router.get("/getUnit/:id", getUnitById);
+router.get("/:id", getUnitById);
 
 /**
  * @swagger
- * /units/updateUnit/{id}:
+ * /api/units/{id}:
  *   put:
  *     summary: O'lchov birligini yangilash
  *     tags: [Units]
@@ -115,11 +115,11 @@ router.get("/getUnit/:id", getUnitById);
  *       500:
  *         description: Server xatosi
  */
-router.put("/updateUnit/:id", updateUnit);
+router.put("/:id", updateUnit);
 
 /**
  * @swagger
- * /units/deleteUnit/{id}:
+ * /api/units/{id}:
  *   delete:
  *     summary: O'lchov birligini o'chirish
  *     tags: [Units]
@@ -138,11 +138,11 @@ router.put("/updateUnit/:id", updateUnit);
  *       500:
  *         description: Server xatosi
  */
-router.delete("/deleteUnit/:id", deleteUnit);
+router.delete("/:id", deleteUnit);
 
 /**
  * @swagger
- * /units/searchUnit:
+ * /api/units/search:
  *   get:
  *     summary: O'lchov birligi nom bo'yicha qidirish
  *     tags: [Units]
@@ -161,6 +161,6 @@ router.delete("/deleteUnit/:id", deleteUnit);
  *       500:
  *         description: Server xatosi
  */
-router.get("/searchUnit", searchUnit);
+router.get("/search", searchUnit);
 
 module.exports = router;

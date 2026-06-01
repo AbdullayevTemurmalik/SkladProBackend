@@ -5,7 +5,9 @@ const {
   Category,
   Unit,
   Product,
+  User
 } = require("./models");
+const bcrypt = require("bcrypt");
 
 async function seedDatabase() {
   try {
@@ -135,8 +137,19 @@ async function seedDatabase() {
 
     await Product.bulkCreate(productsChunk, { logging: false });
 
+    // Yagona Admin foydalanuvchini yaratamiz (Login qilish uchun)
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash("123456", salt);
+    await User.create({
+      username: "admin",
+      password: hashedPassword,
+      role: "admin",
+      firstname: "Asosiy",
+      lastname: "Admin"
+    });
+
     console.log(
-      "\nJami 50 ta mahsulot chiroyli rasmlari bilan saqlandi! UI uchun testga tayyor!",
+      "\nJami 50 ta mahsulot va 1 ta Admin (admin/123456) saqlandi! UI uchun testga tayyor!",
     );
     process.exit(0);
   } catch (error) {
