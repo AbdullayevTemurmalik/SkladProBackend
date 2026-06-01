@@ -41,7 +41,7 @@ exports.loginUser = async (req, res) => {
 // ---------- Get user ---------
 exports.getUsers = async (req, res) => {
   try {
-    const data = await User.findAll({ attributes: { exclude: ['password'] } });
+    const data = await User.findAll();
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ message: error.message });
