@@ -11,10 +11,7 @@ exports.createUser = async (req, res) => {
 
   try {
     let createData = { ...req.body };
-    if (createData.password) {
-      const salt = await bcrypt.genSalt(10);
-      createData.password = await bcrypt.hash(createData.password, salt);
-    }
+    // Removed password hashing as requested
     const data = await User.create(createData);
     res.status(201).json(data);
   } catch (error) {
@@ -29,8 +26,7 @@ exports.loginUser = async (req, res) => {
     const user = await User.findOne({ where: { username } });
     if (!user) return res.status(404).json({ message: 'Foydalanuvchi topilmadi' });
     
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ message: 'Parol noto\'g\'ri' });
+    if (user.password !== password) return res.status(401).json({ message: 'Parol noto\'g\'ri' });
     
     res.status(200).json({ message: 'Tizimga muvaffaqiyatli kirdingiz', user: { id: user.id, username: user.username, role: user.role } });
   } catch (error) {
@@ -73,11 +69,7 @@ exports.updateUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
 
     let updateData = { ...req.body };
-    if (updateData.password) {
-      const salt = await bcrypt.genSalt(10);
-      updateData.password = await bcrypt.hash(updateData.password, salt);
-    }
-
+    // Removed password hashing as requested
     await data.update(updateData);
     const returnData = await User.findByPk(req.params.id, { attributes: { exclude: ['password'] } });
     res.status(200).json(returnData);
