@@ -32,9 +32,7 @@ exports.loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ message: 'Parol noto\'g\'ri' });
     
-    const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, process.env.JWT_SECRET || 'secret_key', { expiresIn: '24h' });
-    
-    res.status(200).json({ message: 'Tizimga muvaffaqiyatli kirdingiz', user: { id: user.id, username: user.username, role: user.role }, token });
+    res.status(200).json({ message: 'Tizimga muvaffaqiyatli kirdingiz', user: { id: user.id, username: user.username, role: user.role } });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
