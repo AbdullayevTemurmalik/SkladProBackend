@@ -26,7 +26,12 @@ exports.loginUser = async (req, res) => {
     const user = await User.findOne({ where: { username } });
     if (!user) return res.status(404).json({ message: 'Foydalanuvchi topilmadi' });
     
-    if (user.password !== password) return res.status(401).json({ message: 'Parol noto\'g\'ri' });
+    if (user.password.startsWith('$2b$')) {
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) return res.status(401).json({ message: 'Parol noto\'g\'ri' });
+    } else {
+      if (user.password !== password) return res.status(401).json({ message: 'Parol noto\'g\'ri' });
+    }
     
     res.status(200).json({ message: 'Tizimga muvaffaqiyatli kirdingiz', user: { id: user.id, username: user.username, role: user.role } });
   } catch (error) {
