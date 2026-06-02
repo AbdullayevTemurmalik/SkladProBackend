@@ -1,8 +1,9 @@
-const { Region, Category, Unit, User, sequelize } = require('../models');
+const { Region, Warehouse, Category, Unit, User, sequelize } = require('../models');
 const bcrypt = require('bcrypt');
 
 exports.seedData = async (req, res) => {
   try {
+
     await sequelize.sync({ force: true });
 
     const regionsList = [
@@ -11,7 +12,7 @@ exports.seedData = async (req, res) => {
       { name: "Navoiy viloyati" }, { name: "Qashqadaryo viloyati" }, { name: "Samarqand viloyati" },
       { name: "Sirdaryo viloyati" }, { name: "Surxondaryo viloyati" }, { name: "Toshkent viloyati" }
     ];
-    await Region.bulkCreate(regionsList);
+    const regions = await Region.bulkCreate(regionsList);
 
     await Category.bulkCreate([
       { name: "Elektronika" }, { name: "Kiyim-kechak" }, { name: "Oziq-ovqat" },
@@ -22,6 +23,15 @@ exports.seedData = async (req, res) => {
       { name: "dona" }, { name: "kg" }, { name: "litr" }, { name: "metr" }, { name: "quti" }
     ]);
 
+    // Har bir viloyatga 2 tadan standart ombor (sklad) qo'shamiz
+    let warehouses = [];
+    for (let r of regions) {
+      warehouses.push({ name: `${r.name.replace(" viloyati", "")} Sklad 1`, regionId: r.id });
+      warehouses.push({ name: `${r.name.replace(" viloyati", "")} Sklad 2`, regionId: r.id });
+    }
+    await Warehouse.bulkCreate(warehouses);
+
+    // Admin yaratish
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash("123456", salt);
     await User.create({
@@ -32,7 +42,7 @@ exports.seedData = async (req, res) => {
       lastname: "Admin"
     });
 
-    res.status(200).json({ message: "Baza toza holatda tayyorlandi! 12 viloyat, 5 kategoriya, 5 o'lchov birligi va Admin (admin/123456) saqlandi. Qolganlarini admin paneldan qo'shishingiz mumkin." });
+    res.status(200).json({ message: "Baza toza holatda tayyorlandi! 12 viloyat, har biriga omborlar, 5 kategoriya, 5 o'lchov birligi va Admin (admin/123456) saqlandi." });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
