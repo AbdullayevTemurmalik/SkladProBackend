@@ -1,26 +1,19 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-const isRailway = process.env.RAILWAY_ENVIRONMENT === 'true' || process.env.RAILWAY_STATIC_URL;
-
 let dbUrl = process.env.DATABASE_URL;
-
-// Agar kompyuterdan turib ulanmoqchi bo'lsa va DATABASE_URL kiritilmagan bo'lsa:
-if (!isRailway && !dbUrl) {
-  console.log('\x1b[31m%s\x1b[0m', '======================================================');
-  console.log('\x1b[31m%s\x1b[0m', 'XATOLIK: Railway bazasiga tashqaridan ulanish uchun');
-  console.log('\x1b[31m%s\x1b[0m', 'Siz .env faylingizga DATABASE_URL ni kiritishingiz shart!');
-  console.log('\x1b[31m%s\x1b[0m', 'Railway Dashboard -> Postgres -> Connect -> Postgres Connection URL ni nusxalab oling.');
-  console.log('\x1b[31m%s\x1b[0m', 'Va .env fayliga quydagicha qo\'shing:');
-  console.log('\x1b[33m%s\x1b[0m', 'DATABASE_URL=postgresql://postgres:...');
-  console.log('\x1b[31m%s\x1b[0m', '======================================================');
-  process.exit(1);
-}
-
-// Default eski URL agar kerak bo'lib qolsa (Lekin ishlamaydi parol xato bo'lsa)
-if (!dbUrl) {
+i:
+if (!dbUrl && process.env.DB_HOST && !process.env.DB_HOST.includes('railway.internal')) {
   dbUrl = 'postgresql://postgres:LZhmLnBOdZCQeSgndLoGpVedSjPObEjQ@zephyr.proxy.rlwy.net:42668/railway';
+} else if (!dbUrl) {
+  const host = process.env.DB_HOST || 'localhost';
+  const port = process.env.DB_PORT || 5432;
+  const user = process.env.DB_USER || 'postgres';
+  const password = process.env.DB_PASSWORD || '';
+  const dbName = process.env.DB_NAME || process.env.BD_NAME || 'railway';
+  dbUrl = `postgresql://${user}:${password}@${host}:${port}/${dbName}`;
 }
+
 
 const sequelize = new Sequelize(
   dbUrl,
