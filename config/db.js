@@ -2,7 +2,6 @@ const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
 let dbUrl = process.env.DATABASE_URL;
-i:
 if (!dbUrl && process.env.DB_HOST && !process.env.DB_HOST.includes('railway.internal')) {
   dbUrl = 'postgresql://postgres:LZhmLnBOdZCQeSgndLoGpVedSjPObEjQ@zephyr.proxy.rlwy.net:42668/railway';
 } else if (!dbUrl) {
