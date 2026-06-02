@@ -2,32 +2,115 @@ const { Region, Warehouse, Category, Unit, Product } = require('../models');
 
 exports.seedData = async (req, res) => {
   try {
-    const regions = await Region.bulkCreate([
-      { name: 'Toshkent' },
-      { name: 'Samarqand' },
-      { name: 'Buxoro' }
-    ]);
+    const bcrypt = require("bcrypt");
+    const { sequelize, User } = require('../models');
     
-    const units = await Unit.bulkCreate([
-      { name: 'dona' },
-      { name: 'kg' },
-      { name: 'litr' }
-    ]);
+    // Drop all tables and recreate
+    await sequelize.sync({ force: true });
+
+    const regionsList = [
+      { name: "Andijon viloyati" }, { name: "Buxoro viloyati" }, { name: "Fargʻona viloyati" },
+      { name: "Jizzax viloyati" }, { name: "Xorazm viloyati" }, { name: "Namangan viloyati" },
+      { name: "Navoiy viloyati" }, { name: "Qashqadaryo viloyati" }, { name: "Samarqand viloyati" },
+      { name: "Sirdaryo viloyati" }, { name: "Surxondaryo viloyati" }, { name: "Toshkent viloyati" }
+    ];
+    const regions = await Region.bulkCreate(regionsList);
 
     const categories = await Category.bulkCreate([
-      { name: 'Elektronika' },
-      { name: 'Oziq-ovqat' },
-      { name: 'Kiyim' }
+      { name: "Elektronika" }, { name: "Kiyim-kechak" }, { name: "Oziq-ovqat" },
+      { name: "Maishiy texnika" }, { name: "Qurilish mollari" }
+    ]);
+
+    const units = await Unit.bulkCreate([
+      { name: "dona" }, { name: "kg" }, { name: "litr" }, { name: "metr" }, { name: "quti" }
     ]);
 
     let warehouses = [];
     for (let r of regions) {
-      warehouses.push({ name: `${r.name} Sklad 1`, regionId: r.id });
-      warehouses.push({ name: `${r.name} Sklad 2`, regionId: r.id });
+      let warehouseCount = r.name.includes("Toshkent") ? 6 : 3;
+      for (let i = 1; i <= warehouseCount; i++) {
+        warehouses.push({
+          name: `${r.name.replace(" viloyati", "")} - ${i}-Sklad`,
+          regionId: r.id,
+        });
+      }
     }
     const createdWarehouses = await Warehouse.bulkCreate(warehouses);
 
-    res.status(200).json({ message: 'Base data seeded successfully! You can add products via API.' });
+    const realProducts = {
+      Elektronika: [
+        { name: "iPhone 15 Pro Max", brand: "Apple", sku: "APP-15-PM" },
+        { name: "Galaxy S24 Ultra", brand: "Samsung", sku: "SAM-S24-U" },
+        { name: "MacBook Pro M3", brand: "Apple", sku: "MAC-M3-PR" },
+        { name: "AirPods Pro 2", brand: "Apple", sku: "AIR-PRO-2" },
+        { name: "PlayStation 5", brand: "Sony", sku: "PS5-CON" },
+      ],
+      "Kiyim-kechak": [
+        { name: "Paxta Futbolka", brand: "Nike", sku: "NK-TSH-01" },
+        { name: "Yozgi Qora Shortik", brand: "Adidas", sku: "AD-SH-02" },
+        { name: "Kuzgi Kurtka", brand: "Puma", sku: "PM-JK-03" },
+        { name: "Erkaklar Jinsi Shimi", brand: "Levi's", sku: "LV-JN-04" },
+        { name: "Sport Krossovkasi", brand: "Reebok", sku: "RB-KR-05" },
+      ],
+      "Oziq-ovqat": [
+        { name: "Olma Sharbat 1L", brand: "Sokko", sku: "SK-AP-1L" },
+        { name: "Shokoladli Pletka", brand: "Milka", sku: "ML-CH-100" },
+        { name: "Gazli Suv 1.5L", brand: "Coca-Cola", sku: "CC-WT-15" },
+        { name: "Sariyog' 82%", brand: "President", sku: "PR-BT-200" },
+        { name: "Qahva Donalari", brand: "Nescafe", sku: "NS-CF-500" },
+      ],
+      "Maishiy texnika": [
+        { name: "Konditsioner 12", brand: "Artel", sku: "AR-AC-12" },
+        { name: "Kir yuvish mashinasi", brand: "LG", sku: "LG-WM-8KG" },
+        { name: "Muzlatgich NoFrost", brand: "Samsung", sku: "SAM-FR-NF" },
+        { name: "Changyutgich", brand: "Philips", sku: "PH-VC-2000" },
+        { name: "Mikroto'lqinli pech", brand: "Panasonic", sku: "PN-MW-20" },
+      ],
+      "Qurilish mollari": [
+        { name: "Sement M400", brand: "Qizilqum", sku: "QZ-CM-400" },
+        { name: "Gipsokarton list", brand: "Knauf", sku: "KN-GK-12" },
+        { name: "Oq Emal Bo'yoq", brand: "Dulux", sku: "DL-PT-WT" },
+        { name: "Laminat 8mm", brand: "Tarkett", sku: "TK-LM-8" },
+        { name: "Kafel Yelim", brand: "Ceresit", sku: "CR-GL-11" },
+      ],
+    };
+
+    let productsChunk = [];
+    for (let j = 0; j < 50; j++) {
+      const category = categories[j % categories.length];
+      const categoryProducts = realProducts[category.name] || realProducts["Elektronika"];
+      const randomProduct = categoryProducts[Math.floor(Math.random() * categoryProducts.length)];
+      const w = createdWarehouses[j % createdWarehouses.length];
+
+      productsChunk.push({
+        name: randomProduct.name,
+        brand: randomProduct.brand,
+        sku: `${randomProduct.sku}-${w.id}-${j}`,
+        height: Math.floor(Math.random() * 100) + 10,
+        width: Math.floor(Math.random() * 100) + 10,
+        length: Math.floor(Math.random() * 100) + 10,
+        year: 2024 + Math.floor(Math.random() * 5),
+        stock: Math.floor(Math.random() * 100) + 10,
+        categoryId: category.id,
+        unitId: units[Math.floor(Math.random() * units.length)].id,
+        warehouseId: w.id,
+        image: `https://picsum.photos/seed/sklad_50_${j}/400/400`,
+      });
+    }
+
+    await Product.bulkCreate(productsChunk, { logging: false });
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash("123456", salt);
+    await User.create({
+      username: "admin",
+      password: hashedPassword,
+      role: "admin",
+      firstname: "Asosiy",
+      lastname: "Admin"
+    });
+
+    res.status(200).json({ message: 'Jami 50 ta mahsulot va 1 ta Admin (admin/123456) saqlandi! UI uchun testga tayyor!' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
