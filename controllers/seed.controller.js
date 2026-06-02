@@ -23,7 +23,7 @@ exports.seedData = async (req, res) => {
       { name: "dona" }, { name: "kg" }, { name: "litr" }, { name: "metr" }, { name: "quti" }
     ]);
 
-    // Har bir viloyatga 2 tadan standart ombor (sklad) qo'shamiz
+
     let warehouses = [];
     for (let r of regions) {
       warehouses.push({ name: `${r.name.replace(" viloyati", "")} Sklad 1`, regionId: r.id });
@@ -31,7 +31,6 @@ exports.seedData = async (req, res) => {
     }
     await Warehouse.bulkCreate(warehouses);
 
-    // Admin yaratish
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash("123456", salt);
     await User.create({
